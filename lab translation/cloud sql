@@ -1,0 +1,98 @@
+
+# Google Cloud Fundamentals: Getting Started with Cloud Storage and Cloud SQL
+## Lab Objectives
+	-Create a Cloud Storage bucket and place an image into it.
+
+	-Create a Cloud SQL instance and configure it.
+
+	-Connect to the Cloud SQL instance from a web server.
+
+	-Use the image in the Cloud Storage bucket on a web page.
+	
+	
+Steps
+
+1. Deploy a web server VM instance.
+	
+		gcloud compute instances create bloghost --machine-type "n1-standard-1" --image-project "debian-cloud" --image "debian-9-stretch-v20190213" 
+		--subnet "default" --tags http
+		
+		gcloud compute firewall-rules create allow-http --action=ALLOW --destination=INGRESS --rules=http:80 --target-tags=http
+
+
+
+2. Create a Cloud Storage bucket using the gsutil command line.
+	
+		i. On the Google Cloud Platform menu, click Activate Cloud Shell and If a dialog box appears, click Start Cloud Shell.
+		
+		ii. For convenience, enter your chosen location into an environment variable called LOCATION. Enter:
+			
+			export LOCATION=US
+			
+		iii.In Cloud Shell, the DEVSHELL_PROJECT_ID environment variable contains your project ID. Enter this command to make a bucket named after your project ID:
+			
+			gsutil mb -l $LOCATION gs://$DEVSHELL_PROJECT_ID
+			
+		iv.Retrieve a banner image from a publicly accessible Cloud Storage location:
+			
+			gsutil cp gs://cloud-training/gcpfci/my-excellent-blog.png my-excellent-blog.png
+		
+		v.Copy the banner image to your newly created Cloud Storage bucket:
+
+			gsutil cp my-excellent-blog.png gs://$DEVSHELL_PROJECT_ID/my-excellent-blog.png
+		
+		vi. Modify the Access Control List of the object you just created so that it is readable by everyone:
+
+			gsutil acl ch -u allUsers:R gs://$DEVSHELL_PROJECT_ID/my-excellent-blog.png
+		
+3. Create the Cloud SQL instance.
+
+4. Configure an application in a Compute Engine instance to use Cloud SQL
+	
+	i.In the VM instances list, click SSH in the row for your VM instance bloghost. change working directory
+		
+		cd /var/www/html
+	
+	ii.Use the nano text editor to edit a file called index.php:
+
+		sudo nano index.php 
+	
+	iii. Paste the content below into the file:
+
+			<html>
+			<head><title>Welcome to my excellent blog</title></head>
+			<body>
+			<h1>Welcome to my excellent blog</h1>
+			<?php
+				$dbserver = "CLOUDSQLIP";
+				$dbuser = "blogdbuser";
+				$dbpassword = "DBPASSWORD";
+			// In a production blog, we would not store the MySQL
+			// password in the document root. Instead, we would store it in a
+			// configuration file elsewhere on the web server VM instance.
+
+				$conn = new mysqli($dbserver, $dbuser, $dbpassword);
+
+				if (mysqli_connect_error()) {
+					echo ("Database connection failed: " . mysqli_connect_error());
+				} else {
+				echo ("Database connection succeeded.");
+				}
+			?>
+			</body></html>
+		
+	iv. Press Ctrl+O, and then press Enter to save your edited file.
+
+	v.Press Ctrl+X to exit the nano text editor.
+
+	vi.Restart the web server:
+
+		sudo service apache2 restart
+	
+	vii.Open a new web browser tab and paste into the address bar your bloghost VM instance's external IP address followed by /index.php. The URL will look like this:
+
+		35.192.208.2/index.php
+	
+	
+	
+	

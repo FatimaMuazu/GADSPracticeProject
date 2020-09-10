@@ -1,0 +1,68 @@
+
+#Essential Google Cloud Infrastructure: Foundation
+#Console and Cloud Shell
+##Lab Objectives
+	
+	-Create a Cloud Storage bucket using the Cloud Console.
+
+	-Create a Cloud Storage bucket using Cloud Shell.
+
+	-Become familiar with Cloud Shell features.
+
+Steps
+
+1. Create a storage bucket
+	
+	i.In the Google Cloud menu, click Activate Cloud Shell 
+	
+	ii. use the following command in the cloud shell to set environment for your project 
+		
+		gcloud config set project [PROJECT_ID]
+	
+	iii. Use the gsutil command to create a bucket. Replace <BUCKET_NAME> with a globally unique name
+		
+		gsutil mb gs://<BUCKET_NAME>
+2. Upload files to cloud storage bucket
+
+	i. to upload a file to the bucket created use the gsutil command where [MY_FILE] is the file to upload to the bucket
+		
+		gsutil cp [MY_FILE] gs://[BUCKET_NAME]
+	
+3. Create a persistent state in Cloud Shell
+	
+	i. To display available regions, run the following gcloud command
+		
+		gcloud compute regions list
+		
+	ii. To create an environment variable and replace [YOUR_REGION] with the region you selected in the previous step
+		
+		INFRACLASS_REGION=[YOUR_REGION]
+	
+	iii. To create a subdirectory for materials used in this class
+
+		 mkdir infraclass
+		
+	iv. To create a file called config in the infraclass directory
+
+		 touch infraclass/config
+		 
+	v. To append the value of your Region environment variable to the config file
+
+		 echo INFRACLASS_REGION=$INFRACLASS_REGION >> ~/infraclass/config
+		 
+	vi. To create a second environment variable for your Project ID, replace [YOUR_PROJECT_ID] with your Project ID
+		 
+		 INFRACLASS_PROJECT_ID=[YOUR_PROJECT_ID]
+	
+	vii.To append the value of your Project ID environment variable to the config file
+
+		 echo INFRACLASS_PROJECT_ID=$INFRACLASS_PROJECT_ID >> ~/infraclass/config
+
+	viii.To verify that the project variable was set
+		 
+		 source infraclass/config
+		 echo $INFRACLASS_PROJECT_ID
+	
+	
+	*W:NqUR>_y~o5TJ
+
